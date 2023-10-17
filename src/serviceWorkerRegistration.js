@@ -147,9 +147,9 @@ function registerValidSW(swUrl, config) {
           // payload: payload,
           // delay: delay,
           // ttl: ttl,
-          endpoint: subscription.endpoint,
-          p256dh: subscription.getKey("p256dh"),
-          auth: subscription.getKey("auth"),
+          endpoint: mySubscription.endpoint,
+          p256dh: mySubscription.keys.p256dh,
+          auth: mySubscription.keys.auth,
         };
 
         fetch(

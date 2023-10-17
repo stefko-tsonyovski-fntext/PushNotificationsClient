@@ -11,15 +11,17 @@
 // opt-in, read https://cra.link/PWA
 
 const isLocalhost = Boolean(
-  window.location.hostname === 'localhost' ||
+  window.location.hostname === "localhost" ||
     // [::1] is the IPv6 localhost address.
-    window.location.hostname === '[::1]' ||
+    window.location.hostname === "[::1]" ||
     // 127.0.0.0/8 are considered localhost for IPv4.
-    window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
+    window.location.hostname.match(
+      /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
+    )
 );
 
 export function register(config) {
-  if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
     if (publicUrl.origin !== window.location.origin) {
@@ -29,7 +31,7 @@ export function register(config) {
       return;
     }
 
-    window.addEventListener('load', () => {
+    window.addEventListener("load", () => {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
       if (isLocalhost) {
@@ -40,8 +42,8 @@ export function register(config) {
         // service worker/PWA documentation.
         navigator.serviceWorker.ready.then(() => {
           console.log(
-            'This web app is being served cache-first by a service ' +
-              'worker. To learn more, visit https://cra.link/PWA'
+            "This web app is being served cache-first by a service " +
+              "worker. To learn more, visit https://cra.link/PWA"
           );
         });
       } else {
@@ -62,14 +64,14 @@ function registerValidSW(swUrl, config) {
           return;
         }
         installingWorker.onstatechange = () => {
-          if (installingWorker.state === 'installed') {
+          if (installingWorker.state === "installed") {
             if (navigator.serviceWorker.controller) {
               // At this point, the updated precached content has been fetched,
               // but the previous service worker will still serve the older
               // content until all client tabs are closed.
               console.log(
-                'New content is available and will be used when all ' +
-                  'tabs for this page are closed. See https://cra.link/PWA.'
+                "New content is available and will be used when all " +
+                  "tabs for this page are closed. See https://cra.link/PWA."
               );
 
               // Execute callback
@@ -80,7 +82,7 @@ function registerValidSW(swUrl, config) {
               // At this point, everything has been precached.
               // It's the perfect time to display a
               // "Content is cached for offline use." message.
-              console.log('Content is cached for offline use.');
+              console.log("Content is cached for offline use.");
 
               // Execute callback
               if (config && config.onSuccess) {
@@ -90,23 +92,89 @@ function registerValidSW(swUrl, config) {
           }
         };
       };
+
+      return registration.pushManager
+        .getSubscription()
+        .then(async function (subscription) {
+          // If a subscription was found, return it.
+          if (subscription) {
+            return subscription;
+          }
+
+          // Get the server's public key
+          const response = await fetch(
+            "https://push-notifications-server.onrender.com/api/v1/notifications/vapidPublicKey"
+          );
+          const vapidPublicKey = await response.text();
+          console.log("Vapid public key", vapidPublicKey);
+          // Chrome doesn't accept the base64-encoded (string) vapidPublicKey yet
+          // urlBase64ToUint8Array() is defined in /tools.js
+          const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+
+          // Otherwise, subscribe the user (userVisibleOnly allows to specify that we don't plan to
+          // send notifications that don't have a visible effect for the user).
+          return registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: convertedVapidKey,
+          });
+        });
+    })
+    .then(function (subscription) {
+      // Send the subscription details to the server using the Fetch API.
+      // fetch("./register", {
+      //   method: "post",
+      //   headers: {
+      //     "Content-type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     subscription: subscription,
+      //   }),
+      // });
+      console.log("Subscription", subscription);
+      document.getElementById("doIt").onclick = function () {
+        // const payload = document.getElementById("notification-payload").value;
+        // const delay = document.getElementById("notification-delay").value;
+        // const ttl = document.getElementById("notification-ttl").value;
+
+        // Ask the server to send the client a notification (for testing purposes, in actual
+        // applications the push notification is likely going to be generated by some event
+        // in the server).
+        fetch(
+          "https://push-notifications-server.onrender.com/api/v1/notifications/send-notification",
+          {
+            method: "post",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+              // subscription: subscription,
+              // payload: payload,
+              // delay: delay,
+              // ttl: ttl,
+              endpoint: subscription.endpoint,
+              p256dh: subscription.getKey("p256dh"),
+              auth: subscription.getKey("auth"),
+            }),
+          }
+        );
+      };
     })
     .catch((error) => {
-      console.error('Error during service worker registration:', error);
+      console.error("Error during service worker registration:", error);
     });
 }
 
 function checkValidServiceWorker(swUrl, config) {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl, {
-    headers: { 'Service-Worker': 'script' },
+    headers: { "Service-Worker": "script" },
   })
     .then((response) => {
       // Ensure service worker exists, and that we really are getting a JS file.
-      const contentType = response.headers.get('content-type');
+      const contentType = response.headers.get("content-type");
       if (
         response.status === 404 ||
-        (contentType != null && contentType.indexOf('javascript') === -1)
+        (contentType != null && contentType.indexOf("javascript") === -1)
       ) {
         // No service worker found. Probably a different app. Reload the page.
         navigator.serviceWorker.ready.then((registration) => {
@@ -120,12 +188,14 @@ function checkValidServiceWorker(swUrl, config) {
       }
     })
     .catch(() => {
-      console.log('No internet connection found. App is running in offline mode.');
+      console.log(
+        "No internet connection found. App is running in offline mode."
+      );
     });
 }
 
 export function unregister() {
-  if ('serviceWorker' in navigator) {
+  if ("serviceWorker" in navigator) {
     navigator.serviceWorker.ready
       .then((registration) => {
         registration.unregister();
@@ -134,4 +204,17 @@ export function unregister() {
         console.error(error.message);
       });
   }
+}
+
+function urlBase64ToUint8Array(base64String) {
+  var padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  var base64 = (base64String + padding).replace(/\-/g, "+").replace(/_/g, "/");
+
+  var rawData = window.atob(base64);
+  var outputArray = new Uint8Array(rawData.length);
+
+  for (var i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
 }

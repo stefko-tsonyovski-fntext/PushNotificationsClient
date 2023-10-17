@@ -142,6 +142,16 @@ function registerValidSW(swUrl, config) {
         console.log("p256dh", subscription.getKey("p256dh"));
         console.log("auth", subscription.getKey("auth"));
 
+        const notificationDto = {
+          // subscription: subscription,
+          // payload: payload,
+          // delay: delay,
+          // ttl: ttl,
+          endpoint: subscription.endpoint,
+          p256dh: subscription.getKey("p256dh"),
+          auth: subscription.getKey("auth"),
+        };
+
         fetch(
           "https://push-notifications-server.onrender.com/api/v1/notifications/send-notification",
           {
@@ -149,15 +159,7 @@ function registerValidSW(swUrl, config) {
             headers: {
               "Content-type": "application/json",
             },
-            body: JSON.stringify({
-              // subscription: subscription,
-              // payload: payload,
-              // delay: delay,
-              // ttl: ttl,
-              endpoint: subscription.endpoint,
-              p256dh: subscription.getKey("p256dh"),
-              auth: subscription.getKey("auth"),
-            }),
+            body: JSON.stringify(notificationDto),
           }
         );
       };

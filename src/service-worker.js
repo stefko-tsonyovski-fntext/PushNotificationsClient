@@ -11,7 +11,8 @@ import { clientsClaim } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+import { StaleWhileRevalidate, NetworkOnly } from "workbox-strategies";
+import { BackgroundSyncPlugin } from "workbox-background-sync";
 
 clientsClaim();
 
@@ -79,3 +80,13 @@ self.addEventListener("push", (event) => {
     })
   );
 });
+
+const bgSyncPlugin = new BackgroundSyncPlugin("hospital-queue");
+
+registerRoute(
+  /.*\/notifications\/send-notification/,
+  new NetworkOnly({
+    plugins: [bgSyncPlugin],
+  }),
+  "POST"
+);

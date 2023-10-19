@@ -24,7 +24,7 @@
     "workbox-streams": "^6.6.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set HTTPS=true&&set SSL_CRT_FILE=C:/Users/stefko.tsonyovski/Desktop/Projects/pwa-push-notifications/pwa-push-notifications/cert.crt&&set SSL_KEY_FILE=C:/Users/stefko.tsonyovski/Desktop/Projects/pwa-push-notifications/pwa-push-notifications/cert.key&&react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

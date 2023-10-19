@@ -17,15 +17,10 @@ function App() {
         //   };
 
         //   fetch(
-        //     "https://push-notifications-server.onrender.com/api/v1/notifications/send-notification",
-        //     {
-        //       method: "post",
-        //       headers: {
-        //         "Content-type": "application/json",
-        //       },
-        //       body: JSON.stringify(notificationDto),
-        //     }
-        //   );
+        //     "https://push-notifications-server.onrender.com/api/v1/notifications/vapidPublicKey"
+        //   )
+        //     .then((res) => console.log(res))
+        //     .catch((err) => console.error(err));
         // }}
         id="doIt"
       >

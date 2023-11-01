@@ -25,7 +25,7 @@ function App() {
 
       {showReload && waitingWorker && (
         <button onClick={reloadPage} id="doIt">
-          Reload
+          Refresh
         </button>
       )}
     </div>

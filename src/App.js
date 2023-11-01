@@ -41,7 +41,7 @@ function App() {
         // }}
         id="doIt"
       >
-        Refresh
+        Reload
       </button>
     </div>
   );

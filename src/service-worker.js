@@ -90,3 +90,18 @@ registerRoute(
   }),
   "POST"
 );
+
+const detectSWUpdate = async () => {
+  const registration = await navigator.serviceWorker.ready;
+
+  registration.addEventListener("updatefound", (event) => {
+    const newSW = registration.installing;
+    newSW.addEventListener("statechange", (event) => {
+      if (newSW.state === "installed") {
+        console.log("ready");
+      }
+    });
+  });
+};
+
+detectSWUpdate();

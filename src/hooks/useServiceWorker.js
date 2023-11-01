@@ -20,6 +20,7 @@ export const useServiceWorker = () => {
     setShowReload(false);
     window.location.reload();
   }, [waitingWorker]);
+
   // register the service worker
   useEffect(() => {
     // If you want your app to work offline and load faster, you can change

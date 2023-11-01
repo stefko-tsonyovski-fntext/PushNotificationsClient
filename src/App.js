@@ -21,28 +21,13 @@ function App() {
 
   return (
     <div className="App">
-      <button
-        // onClick={() => {
-        //   const notificationDto = {
-        //     // subscription: subscription,
-        //     // payload: payload,
-        //     // delay: delay,
-        //     // ttl: ttl,
-        //     endpoint: "subscription.endpoint",
-        //     p256dh: "p256dh",
-        //     auth: "auth",
-        //   };
+      {showReload && waitingWorker && <p>Update Available</p>}
 
-        //   fetch(
-        //     "https://push-notifications-server.onrender.com/api/v1/notifications/vapidPublicKey"
-        //   )
-        //     .then((res) => console.log(res))
-        //     .catch((err) => console.error(err));
-        // }}
-        id="doIt"
-      >
-        Reload
-      </button>
+      {showReload && waitingWorker && (
+        <button onClick={reloadPage} id="doIt">
+          Reload
+        </button>
+      )}
     </div>
   );
 }

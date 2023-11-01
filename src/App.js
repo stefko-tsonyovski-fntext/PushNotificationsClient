@@ -24,7 +24,7 @@ function App() {
         // }}
         id="doIt"
       >
-        Click
+        Refresh
       </button>
     </div>
   );

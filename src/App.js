@@ -20,7 +20,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Hello from my React PWA!</h1>
+      <h1>Hello from React PWA!</h1>
 
       <Toaster
         position="bottom-left"
